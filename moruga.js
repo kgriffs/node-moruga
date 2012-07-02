@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var http = require('http');
+var util = require('util');
 var fs = require('fs');
 var request = require('request');
 var url = require('url');
@@ -28,7 +29,7 @@ var knownOpts = {
   verbose: {
     abbr: 'v',
     flag: true,
-    help: 'Enable verbose mode. Dumps requests and responses to stdout.'
+    help: 'Enable verbose mode. Dumps requests and responses to stdout.',
     required: false
   }
 }
@@ -50,7 +51,7 @@ var runPreFilters = function(filters, req, res) {
     var filter = filters[i];
     var match = false;
 
-    if (filter.path && filter.name && (typeof filter.action === 'function') {
+    if (filter.path && filter.name && (typeof filter.action === 'function')) {
       if (typeof filter.path === 'string') {
         match = (filter.path === req.url);
       }
@@ -80,18 +81,20 @@ var server = http.createServer(function(req, res) {
   var dump = {
     buffer: '',
     log: function(str) {
-      buffer += str;
-      buffer += '\n';
+      this.buffer += str;
+      this.buffer += '\n';
     }
   };
 
+  var originUrl = options.url + req.url;
   console.log('Proxying request to: ' + originUrl);
 
   if (options.verbose) {
     dump.log(br_thick);
-    dump.log('Incoming');
+    dump.log('Request');
     dump.log(br_thin);
-    dump.log(req.headers);
+    dump.log(util.inspect(req.headers));
+    dump.log(br_thin);
 
     req.on('data', function (data) { dump.log(data); });
     req.on('end', function() { dump.log(br_thick)})
@@ -99,7 +102,6 @@ var server = http.createServer(function(req, res) {
     res.on('finish', function() { console.log(dump.buffer); });
   }
 
-  var originUrl = options.url + req.url;
 
   if (options.filters && options.filters.pre) {
     if (! runPreFilters(options.filters.pre, req, res)) {
@@ -107,10 +109,11 @@ var server = http.createServer(function(req, res) {
     }
   }
 
-  req.pipe(request(origin_url, function(error, response, body) {
+  req.pipe(request(originUrl, function(error, response, body) {
     if (options.verbose) {
+      dump.log('Response');
       dump.log(br_thin);
-      dump.log(response.headers);
+      dump.log(util.inspect(req.headers));
       dump.log(br_thin);
       dump.log(response.body);
     }
