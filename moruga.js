@@ -2,10 +2,12 @@
 
 var http = require('http');
 var util = require('util');
+var path = require('path');
 var fs = require('fs');
 var request = require('request');
 var url = require('url');
 var nomnom = require("nomnom");
+var stream = require('stream');
 
 var knownOpts = {
   url: {
@@ -37,16 +39,26 @@ var knownOpts = {
 var options = nomnom.options(knownOpts).parse();
 
 if (options.filters) {
+
+  // Do this silly dance to ensure a directory prefix on the module
+  // name; otherwise, require won't look in the right place.
+  var filters_module_name = options.filters;
+  if (filters_module_name.indexOf('.' + path.sep) !== 0) {
+    if (path.dirname(options.filters) === '.') {
+      filters_module_name = '.' + path.sep + filters_module_name;
+    }
+  }
+
   try {
-    options.filters = require(options.filters);
+    options.filters = require(filters_module_name);
   }
   catch (ex) {
-    console.log("The filters file \"" + options.rules + "\" could not be loaded. " + ex);
+    console.log("The filters file \"" + options.filters + "\" could not be loaded. " + ex);
     process.exit(1);
   }
 }
 
-var runPreFilters = function(filters, req, res) {
+var runPreFilters = function(filters, req, res, dump) {
   for (var i = 0; i != filters.length; ++i) {
     var filter = filters[i];
     var match = false;
@@ -60,7 +72,7 @@ var runPreFilters = function(filters, req, res) {
       }
 
       if (match) {
-        console.log('---> Filter: %s (%s)', filter.name, req.url);
+        dump.log('---> Using Filter: %s (%s)', filter.name, req.url);
         filter.action(req, res);
       }
 
@@ -74,47 +86,71 @@ var runPreFilters = function(filters, req, res) {
   return true;
 }
 
-var br_thick = '=====================================================';
-var br_thin = '-----------------------------------------------------';
+var BufferedConsole = function(out) {
+  this._buffer = '';
+  this.out = out;
+};
+
+BufferedConsole.prototype.log = function() {
+  if (arguments.length == 1) {
+    this.buffer += arguments[0];
+  }
+  else
+  {
+    this.buffer += util.format.apply(this, arguments);
+  }
+
+  this.buffer += '\n';
+}
+
+BufferedConsole.prototype.flush = function() {
+  this.out(this.buffer);
+  this.buffer = '';
+}
+
+BufferedConsole.prototype.brThick = function() {
+  this.log('=====================================================');
+}
+
+BufferedConsole.prototype.brThin = function() {
+  this.log('-----------------------------------------------------');
+}
 
 var server = http.createServer(function(req, res) {
-  var dump = {
-    buffer: '',
-    log: function(str) {
-      this.buffer += str;
-      this.buffer += '\n';
-    }
-  };
+  var dump = new BufferedConsole(console.log);
 
   var originUrl = options.url + req.url;
   console.log('Proxying request to: ' + originUrl);
 
   if (options.verbose) {
-    dump.log(br_thick);
+    dump.brThick();
     dump.log('Request');
-    dump.log(br_thin);
+    dump.brThin();
     dump.log(util.inspect(req.headers));
-    dump.log(br_thin);
+    dump.brThin();
 
     req.on('data', function (data) { dump.log(data); });
-    req.on('end', function() { dump.log(br_thick)})
+    req.on('end', function() { dump.brThick()})
 
-    res.on('finish', function() { console.log(dump.buffer); });
+    res.on('finish', function() { dump.flush(); });
   }
 
 
   if (options.filters && options.filters.pre) {
-    if (! runPreFilters(options.filters.pre, req, res)) {
+    if (! runPreFilters(options.filters.pre, req, res, dump)) {
       return;
     }
   }
 
+  // @todo Buffer request data and log it, then pass data + headers
+  // on to request.
+
   req.pipe(request(originUrl, function(error, response, body) {
     if (options.verbose) {
       dump.log('Response');
-      dump.log(br_thin);
+      dump.brThin();
       dump.log(util.inspect(req.headers));
-      dump.log(br_thin);
+      dump.brThin();
       dump.log(response.body);
     }
 
