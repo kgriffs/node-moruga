@@ -26,13 +26,16 @@ var knownOpts = {
     abbr: 'f',
     metavar: 'PATH',
     help: 'Path to a JavaScript filter file. The file should export a list of pre and post filters to run on each request. See also filters.example.js',
-    required: false
   },
   verbose: {
     abbr: 'v',
     flag: true,
     help: 'Enable verbose mode. Dumps requests and responses to stdout.',
-    required: false
+  },
+  port: {
+    abbr: 'p',
+    help: 'Port on which moruga should listen (default: 9000)',
+    default: '9000'
   }
 }
 
@@ -57,6 +60,8 @@ if (options.filters) {
     process.exit(1);
   }
 }
+
+options.port = parseInt(options.port);
 
 var runPreFilters = function(filters, req, res, dump) {
   for (var i = 0; i != filters.length; ++i) {
@@ -160,5 +165,5 @@ var server = http.createServer(function(req, res) {
 });
 
 
-
-server.listen(9000);
+console.log('Moruga is listening on *:' + options.port);
+server.listen(options.port);
