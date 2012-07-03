@@ -8,6 +8,7 @@ lib-cov
 *.gz
 
 foo.js
+filters.js
 
 pids
 logs
