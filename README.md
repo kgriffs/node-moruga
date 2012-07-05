@@ -22,13 +22,11 @@ Moruga is a spider genus, a district in Trinidad, the hottest pepper in the worl
   * E.g.: http://moruga.example.com/chunky?meat=bacon ---> http://duckduckgo.com/chunky?meat=bacon
 * Print requests/responses to/from the user agent
 
-### HTTPS Example ###
+### HTTPS ###
 
 ```
 ./moruga.js -u http://duckduckgo.com -f filters.example.js --ssl-key=server-key.pem --ssl-cert=server-cert.pem
 ```
-
-**Notes**
 
 * Listen for HTTPS requests on all IP addresses, using port 443
 * Use default list of CAs, including well-known ones like Verisign
