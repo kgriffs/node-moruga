@@ -1,67 +1,136 @@
 #!/usr/bin/env node
 
-var http = require('http');
-var util = require('util');
-var path = require('path');
-var fs = require('fs');
-var request = require('request');
-var url = require('url');
-var nomnom = require("nomnom");
-var stream = require('stream');
+[
+  'http',
+  'https',
+  'util',
+  'path',
+  'fs',
+  'request',
+  'url',
+  "nomnom",
+  'nopt',
+  'stream'
+
+].forEach(function(module) { global[module] = require(module); })
 
 var knownOpts = {
   url: {
     abbr: 'u',
     metavar: 'URL',
-    help: 'URL prefix for the origin server. Prepended to the path portion of the URL sent to the proxy to create the URL used in the request to the origin server.',
+    help: 'URL prefix for the origin server',
     required: true,
     callback: function(channel) {
       val = url.parse(String(channel))
       if (! val.host || ! (/^https?:/i).test(val.protocol)) {
-        return "url must be a valid HTTP URL";
+        return 'url must be a valid HTTP URL';
       }
     }
   },
+  port: {
+    abbr: 'p',
+    help: 'Port on which Moruga should listen (default: 80/443)',
+    callback: function(port) {
+      if(! /^\d+$/.test(port)) {
+        return 'port must be a number'
+      }
+    }
+  },
+
+
   filters: {
     abbr: 'f',
     metavar: 'PATH',
-    help: 'Path to a JavaScript filter file. The file should export a list of pre and post filters to run on each request. See also filters.example.js',
+    help: 'Path to a filter file',
   },
   verbose: {
     abbr: 'v',
     flag: true,
-    help: 'Enable verbose mode. Dumps requests and responses to stdout.',
+    help: 'Enable verbose mode',
   },
-  port: {
-    abbr: 'p',
-    help: 'Port on which moruga should listen (default: 9000)',
-    default: '9000'
+
+
+  'ssl-key': {
+    metavar: 'PATH',
+    help: 'Enable HTTPS using this private key (PEM)'
+  },
+  'ssl-cert': {
+    metavar: 'PATH',
+    help: 'Enable HTTPS using this certificate (PEM)'
+  },
+  'ssl-passphrase': {
+    metavar: 'PATH',
+    help: 'Passphrase for the private key, if required'
+  },
+  'ssl-ca': {
+    metavar: 'PATH',
+    help: 'Enable HTTPS using this CA file'
   }
 }
 
-var options = nomnom.options(knownOpts).parse();
+var options = (function(options) {
 
-if (options.filters) {
+  if (options.filters) {
 
-  // Do this silly dance to ensure a directory prefix on the module
-  // name; otherwise, require won't look in the right place.
-  var filters_module_name = options.filters;
-  if (filters_module_name.indexOf('.' + path.sep) !== 0) {
-    if (path.dirname(options.filters) === '.') {
-      filters_module_name = '.' + path.sep + filters_module_name;
+    // Do this silly dance to ensure a directory prefix on the module
+    // name; otherwise, require won't look in the right place.
+    var filters_module_name = options.filters;
+    if (filters_module_name.indexOf('.' + path.sep) !== 0) {
+      if (path.dirname(options.filters) === '.') {
+        filters_module_name = '.' + path.sep + filters_module_name;
+      }
+    }
+
+    try {
+      options.filters = require(filters_module_name);
+    }
+    catch (ex) {
+      console.log(ex.toString());
+      console.log('Could not load the filters file "' + options.filters + '"');
+      process.exit(1);
     }
   }
 
-  try {
-    options.filters = require(filters_module_name);
-  }
-  catch (ex) {
-    console.log("The filters file \"" + options.filters + "\" could not be loaded. " + ex);
-    process.exit(1);
-  }
-}
+  if (options['ssl-key']) {
+    if (! options['ssl-cert']) {
+      console.log('Missing --ssl-cert=PATH');
+      process.exit(1);
+    }
 
-options.port = parseInt(options.port);
+    try {
+      options.ssl = {
+        key: fs.readFileSync(options['ssl-key']),
+        cert: fs.readFileSync(options['ssl-cert']),
+        passphrase: options['ssl-passphrase'] ?
+          fs.readFileSync(options['ssl-passphrase']) : null,
+        ca: options['ssl-ca'] ?
+          fs.readFileSync(options['ssl-ca']) : null
+      };
+    }
+    catch (ex) {
+      console.log(ex.toString());
+      console.log('Could not read one or more files specified for configuring SSL/TLS');
+      process.exit(1);
+    }
+
+    // Use the standard port if one wasn't specified
+    if (! options.port) {
+      options.port = 443;
+    }
+  }
+  else {
+    // Use the standard port if one wasn't specified
+    if (! options.port) {
+      options.port = 80;
+    }
+  }
+
+  // Convert the port to an integer if it isn't one already
+  options.port = parseInt(options.port);
+
+  return options;
+
+})(nomnom.options(knownOpts).parse());
 
 var runPreFilters = function(filters, req, res, dump) {
   for (var i = 0; i != filters.length; ++i) {
@@ -121,7 +190,7 @@ BufferedConsole.prototype.brThin = function() {
   this.log('-----------------------------------------------------');
 }
 
-var server = http.createServer(function(req, res) {
+var onRequest = function(req, res) {
   var dump = new BufferedConsole(console.log);
 
   var originUrl = options.url + req.url;
@@ -162,8 +231,24 @@ var server = http.createServer(function(req, res) {
     res.writeHead(response.statusCode, response.headers);
     res.end(body);
   }));
+}
+
+process.on('uncaughtException', function (err) {
+  if (err.errno === 'EACCES') {
+    console.log('Unable to bind to port %d. Permission denied.', options.port);
+  }
+  else {
+    console.log('Fatal exception: ' + err);
+  }
+
+  process.exit(1);
 });
 
+var server = (options.ssl) ?
+  https.createServer(options.ssl, onRequest) :
+  http.createServer(onRequest);
 
-console.log('Moruga is listening on *:' + options.port);
 server.listen(options.port);
+
+console.log('Listening on *:' + options.port);
+
