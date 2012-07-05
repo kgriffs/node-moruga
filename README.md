@@ -1,13 +1,9 @@
 Moruga
 ======
 
-<img src="http://caribbeancelebs.com/wp-content/uploads/2012/02/Trinidad-Moruga-Scorpion.jpg" width="300px" style="float:left; padding-right: 10px" />
+Moruga is a spider genus, a district in Trinidad, the hottest pepper in the world, and a transparent HTTP debugging proxy. 
 
-**TL;DR**
-
-Moruga is a spider genus, a district in Trinidad, the hottest pepper in the world, and a transparent HTTP debugging proxy.
-
-<div style="clear:both;"></div>
+<img src="http://caribbeancelebs.com/wp-content/uploads/2012/02/Trinidad-Moruga-Scorpion.jpg" width="300px"/> 
 
 
 ### Example ###
