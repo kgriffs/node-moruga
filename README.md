@@ -15,7 +15,7 @@ sudo npm install . -g
 
 ### Example ###
 
-```
+```bash
 moruga -u http://duckduckgo.com -f filters.example.js -v
 ```
 
@@ -27,7 +27,7 @@ moruga -u http://duckduckgo.com -f filters.example.js -v
 
 ### HTTPS ###
 
-```
+```bash
 moruga -u http://duckduckgo.com -f filters.example.js --ssl-key=server-key.pem --ssl-cert=server-cert.pem
 ```
 
