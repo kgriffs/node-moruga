@@ -1,15 +1,22 @@
 Moruga
 ======
 
-Moruga is a spider genus, a district in Trinidad, the hottest pepper in the world, and a transparent HTTP debugging proxy. 
+Moruga is a spider genus, a district in Trinidad, the hottest pepper in the world, and a transparent HTTP debugging proxy.
 
-<img src="http://caribbeancelebs.com/wp-content/uploads/2012/02/Trinidad-Moruga-Scorpion.jpg" width="300px"/> 
+<img src="http://caribbeancelebs.com/wp-content/uploads/2012/02/Trinidad-Moruga-Scorpion.jpg" width="300px"/>
 
+### Installation ###
+
+```bash
+git clone https://github.rackspace.com/atl/moruga
+cd moruga
+sudo npm install . -g
+```
 
 ### Example ###
 
 ```
-./moruga.js -u http://duckduckgo.com -f filters.example.js -v
+moruga -u http://duckduckgo.com -f filters.example.js -v
 ```
 
 * Listen for HTTP requests on all IP addresses, using port 80
@@ -21,7 +28,7 @@ Moruga is a spider genus, a district in Trinidad, the hottest pepper in the worl
 ### HTTPS ###
 
 ```
-./moruga.js -u http://duckduckgo.com -f filters.example.js --ssl-key=server-key.pem --ssl-cert=server-cert.pem
+moruga -u http://duckduckgo.com -f filters.example.js --ssl-key=server-key.pem --ssl-cert=server-cert.pem
 ```
 
 * Listen for HTTPS requests on all IP addresses, using port 443

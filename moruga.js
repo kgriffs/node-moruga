@@ -6,11 +6,11 @@
   'util',
   'path',
   'fs',
-  'request',
   'url',
-  "nomnom",
-  'nopt',
-  'stream'
+  'stream',
+
+  'request',
+  "nomnom"
 
 ].forEach(function(module) { global[module] = require(module); })
 
@@ -126,7 +126,7 @@ var options = (function(options) {
   }
 
   // Convert the port to an integer if it isn't one already
-  options.port = parseInt(options.port);
+  options.port = +options.port;
 
   return options;
 

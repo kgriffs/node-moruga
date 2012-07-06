@@ -1,0 +1,19 @@
+{
+  "name": "Moruga",
+  "version": "0.1.0",
+  "description": "Debugging HTTP proxy",
+  "preferGlobal": "true",
+  "main": "moruga.js",
+  "bin": { "moruga": "moruga.js" },
+  "author": "Kurt Griffiths",
+  "keywords": ["debugging", "http", "proxy"],
+  "repository" : {
+    "type": "git",
+    "url": "https://github.rackspace.com/atl/moruga.git"
+  },
+  "dependencies": {
+    "request": "*",
+    "nomnom": "*"
+  },
+  "engines": { "node": "*" }
+}
