@@ -8,6 +8,7 @@
   'fs',
   'url',
   'stream',
+  'vm',
 
   'request',
   "nomnom"
@@ -71,22 +72,17 @@ var knownOpts = {
 var options = (function(options) {
 
   if (options.filters) {
-
-    // Do this silly dance to ensure a directory prefix on the module
-    // name; otherwise, require won't look in the right place.
-    var filters_module_name = options.filters;
-    if (filters_module_name.indexOf('.' + path.sep) !== 0) {
-      if (path.dirname(options.filters) === '.') {
-        filters_module_name = '.' + path.sep + filters_module_name;
-      }
-    }
-
     try {
-      options.filters = require(filters_module_name);
+      var filters_js = fs.readFileSync(options.filters);
+
+      var context = { filters: {} }
+      vm.runInNewContext(filters_js, options.filters);
+
+      options.filters = context.filters
     }
     catch (ex) {
       console.log(ex.toString());
-      console.log('Could not load the filters file "' + options.filters + '"');
+      console.log('Could not load the filters file "' + filters_module_name + '"');
       process.exit(1);
     }
   }
