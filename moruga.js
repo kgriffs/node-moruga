@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-[
+"use strict"
+
+var modules = [
   'http',
   'https',
   'util',
@@ -12,8 +14,9 @@
 
   'request',
   "nomnom"
+]
 
-].forEach(function(module) { global[module] = require(module); })
+modules.forEach(function(module) { global[module] = require(module); })
 
 var knownOpts = {
   url: {
@@ -22,7 +25,7 @@ var knownOpts = {
     help: 'URL prefix for the origin server',
     required: true,
     callback: function(channel) {
-      val = url.parse(String(channel))
+      var val = url.parse(String(channel))
       if (! val.host || ! (/^https?:/i).test(val.protocol)) {
         return 'url must be a valid HTTP URL';
       }
@@ -72,17 +75,19 @@ var knownOpts = {
 var options = (function(options) {
 
   if (options.filters) {
+    var filters_filename = options.filters;
+
     try {
-      var filters_js = fs.readFileSync(options.filters);
+      var filters_js = fs.readFileSync(filters_filename);
 
       var context = { filters: {} }
-      vm.runInNewContext(filters_js, options.filters);
+      vm.runInNewContext(filters_js, context);
 
       options.filters = context.filters
     }
     catch (ex) {
       console.log(ex.toString());
-      console.log('Could not load the filters file "' + filters_module_name + '"');
+      console.log('Could not load the filters file "' + filters_filename + '"');
       process.exit(1);
     }
   }

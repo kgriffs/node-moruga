@@ -3,11 +3,9 @@ filters.pre = [
     name: 'Hunt for bacon',
     path: '/chunky-bacon',
     action: function(req, res) {
-
-      console.log(req.headers['user-agent']);
-
       // End the response stream to tell moruga to halt processing
       // and bail out of this request without proxying it.
+      res.writeHead(200, {'X-Moruga-Intercepted': true});
       res.end('Soooooo chunky.');
     }
   },
@@ -17,6 +15,7 @@ filters.pre = [
     action: function(req, res) {
       // End the response stream to tell moruga to halt processing
       // and bail out of this request without proxying it.
+      res.writeHead(200, {'X-Moruga-Intercepted': true});
       res.end("Let's eat!");
     }
   },
@@ -31,7 +30,7 @@ filters.pre = [
 
       if (trigger || !this._authed_by_agent[user_agent]) {
         this._authed_by_agent[user_agent] = true;
-        res.writeHead(503, {'X-Moruga-Fail': true});
+        res.writeHead(503, {'X-Moruga-Intercepted': true});
         res.end();
       }
     },
