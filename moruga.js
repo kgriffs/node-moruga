@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+// https://developer.mozilla.org/en/JavaScript/Strict_mode
 "use strict"
 
 var modules = [
@@ -75,15 +76,12 @@ var knownOpts = {
 var options = (function(options) {
 
   if (options.filters) {
-    var filters_filename = options.filters;
+    // Convert to an absoulute to force require() to not look
+    // for a node_modules directory.
+    var filters_filename = path.resolve(options.filters);
 
     try {
-      var filters_js = fs.readFileSync(filters_filename);
-
-      var context = { filters: {} }
-      vm.runInNewContext(filters_js, context);
-
-      options.filters = context.filters
+      options.filters = require(filters_filename);
     }
     catch (ex) {
       console.log(ex.toString());

@@ -1,4 +1,4 @@
-filters.pre = [
+exports.pre = [
   {
     name: 'Hunt for bacon',
     path: '/chunky-bacon',
