@@ -4,7 +4,7 @@
   "description": "Debugging HTTP proxy",
   "preferGlobal": "true",
   "main": "moruga.js",
-  "bin": { "moruga": "moruga.js" },
+  "bin": { "moruga": "index.js" },
   "author": "Kurt Griffiths",
   "keywords": ["debugging", "http", "proxy"],
   "repository" : {
@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "request": "*",
-    "nomnom": "*"
+    "nomnom": "*",
+    "connect": "*"
   },
   "engines": { "node": "*" }
 }
