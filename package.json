@@ -1,6 +1,6 @@
 {
   "name": "Moruga",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Debugging HTTP proxy",
   "preferGlobal": "true",
   "main": "moruga.js",
@@ -15,6 +15,7 @@
     "request": "*",
     "nomnom": "*",
     "connect": "*",
-    "use": "*"
+    "use": "*",
+    "xregexp": "*"
   }
 }
