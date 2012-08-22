@@ -116,7 +116,6 @@ And, finally, a more complex example showing how you can trigger different behav
   name: 'Noop',
   path: /^\/.*/,
   action: function(req, res, next) {
-    var user_agent = req.headers['user-agent'];
     var control = req.headers['x-moruga-control'];
 
     if (!control) {
