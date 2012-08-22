@@ -113,7 +113,7 @@ And, finally, a more complex example showing how you can trigger different behav
 
 ```js
 {
-  name: 'Noop',
+  name: 'Handler for X-Moruga-Control',
   path: /^\/.*/,
   action: function(req, res, next) {
     var control = req.headers['x-moruga-control'];
