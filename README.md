@@ -25,7 +25,7 @@ moruga -u http://duckduckgo.com -f filters.example.js -v
 
 * Listen for HTTP requests on all IP addresses, using port 80
 * Import the filters.example.js module and load its *filters* array
-* Proxy requests to http://duckduckgo.com[PATH_AND_QUERY_STRING]
+* Proxy requests to http://duckduckgo.com[PATH\_AND\_QUERY\_STRING]
   * E.g.: http://moruga.example.com/chunky?meat=bacon ---> http://duckduckgo.com/chunky?meat=bacon
 * Print requests/responses to/from the user agent
 
@@ -38,7 +38,27 @@ moruga -u http://duckduckgo.com -f filters.example.js --ssl-key=server-key.pem -
 * Listen for HTTPS requests on all IP addresses, using port 443
 * Use default list of CAs, including well-known ones like Verisign
 * mport the filters.example.js module and load its *filters* array
-* Proxy requests to http://duckduckgo.com[PATH_AND_QUERY_STRING]
+* Proxy requests to http://duckduckgo.com[PATH\_AND\_QUERY\_STRING]
+
+### Built-in Filters ###
+
+Moruga comes with two built-in filters. The first is a request/response logger, which is enabled with the -v option on the command line. Currently, the build-in logger only outputs headers, but adding an option to write out message bodies.
+
+The second built-in filter is a handler for the custom X-Moruga-Control header. Using this header, you can trigger specific actions for each request. This is useful for writing unit tests.
+
+The built-in X-Moruga-Control handler recognizes the following directives:
+
+```javascript
+var shortCircuitDirective = /^short-circuit, status=(\d+)$/
+var emptyReplyDirective = /^empty-reply, wait-sec=(\d+)$/
+var truncateBodyDirective /^truncate-body, location=(one-off|beginning|middle)$/
+```
+
+For example, to test response handling in your code for a particular HTTP status code, include this header line in the client's request:
+
+```
+X-Moruga-Control: short-circuit, status=403
+```
 
 ### Filter Pipeline ###
 
