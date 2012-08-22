@@ -17,6 +17,12 @@ cd moruga
 sudo npm install . -g
 ```
 
+Run moruga without any parameters to view available options.
+
+```bash
+moruga
+```
+
 ### HTTP Example ###
 
 ```bash
@@ -62,9 +68,9 @@ X-Moruga-Control: short-circuit, status=403
 
 ### Filter Pipeline ###
 
-Moruga uses the popular [Connect](http://www.senchalabs.org/connect/) library to create a filter pipeline for proxied HTTP requests. Each filter contains a human-readable name, URL path to match on, and an action. Actions may terminate the filter pipeline and return their own response, or allow processing to continue.
+Moruga uses the popular [Connect](http://www.senchalabs.org/connect/) library to create a filter pipeline for proxied HTTP requests. Each filter contains a human-readable name, URL path to match on, and an action. A custom actions may terminate the filter pipeline and return its own response, or allow processing to continue down the pipe.
 
-For example, If I want to short-circuit every request to '/chunky-bacon' in order to express my approval of a certain type of breakfast meat, the following filter will do the trick:
+For example, if I want to short-circuit every request to '/chunky-bacon' in order to express my approval of a certain type of breakfast meat, the following filter will do the trick:
 
 ```javascript
 {
@@ -132,9 +138,11 @@ And, finally, a more complex example showing how you can trigger different behav
 }
 ```  
 
-### Filters module ###
+### Custom Filters module ###
 
-The Moruga filter pipeline is loaded from a Node module file which simply exports an array named *filters*, containing a list of filter objects. Filters are installed in the pipeline in the same order as they appear in the array.
+Moruga can load custom filters from a filter module file. The module simply needs to export an array named *filters*, containing a list of filter objects. 
+
+*Note: Filters are installed in the pipeline in the same order as they appear in the array.*
 
 An example filters module:
 
