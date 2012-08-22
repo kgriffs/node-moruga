@@ -48,14 +48,10 @@ The second built-in filter is a handler for the custom X-Moruga-Control header. 
 
 The built-in X-Moruga-Control handler recognizes the following directives:
 
-```javascript
-
+```
 /^short-circuit, status=(\d+)$/
-
 /^empty-reply, wait-sec=(\d+)$/
-
 /^truncate-body, location=(one-off|beginning|middle)$/
-
 ```
 
 For example, to test response handling in your code for a particular HTTP status code, include this header line in the client's request:
