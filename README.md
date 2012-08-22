@@ -100,8 +100,6 @@ And, finally, a more complex example showing how you can trigger different behav
 
     var match = /^short-circuit, status=(\d+)/.exec(control);
 
-    debugger;
-    
     if (match) {
       var code = parseInt(match[1]);
       res.writeHead(code, {'X-Short-Circuit': true});
