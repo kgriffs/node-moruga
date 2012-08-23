@@ -1,15 +1,30 @@
 {
-  "name": "Moruga",
-  "version": "0.3.0",
+  "name": "moruga",
+  "version": "0.1.2",
   "description": "Debugging HTTP proxy",
   "preferGlobal": "true",
-  "main": "moruga.js",
-  "bin": { "moruga": "index.js" },
-  "author": "Kurt Griffiths",
-  "keywords": ["debugging", "http", "proxy"],
-  "repository" : {
+  "directories": {
+    "lib": "./lib"
+  },
+  "bin": {
+    "moruga": "./index.js"
+  },
+  "author": "Kurt Griffiths (http://about.me/kgriffs)",
+  "bugs": {
+    "url": "https://github.com/racker/node-moruga/issues"
+  },
+  "contributors": [],
+  "maintainers": [
+    "kgriffs"
+  ],
+  "keywords": [
+    "debugging",
+    "http",
+    "proxy"
+  ],
+  "repository": {
     "type": "git",
-    "url": "https://github.rackspace.com/atl/moruga.git"
+    "url": "https://github.com/racker/node-moruga.git"
   },
   "dependencies": {
     "request": "*",
@@ -17,5 +32,11 @@
     "connect": "*",
     "use": "*",
     "xregexp": "*"
-  }
+  },
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache 2.0"
 }

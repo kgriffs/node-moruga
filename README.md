@@ -1,20 +1,20 @@
 Moruga
 ======
 
-Moruga is a spider genus, a district in Trinidad, the hottest pepper in the world, and a transparent HTTP debugging proxy.
+Moruga is a spider genus, a district in Trinidad, the hottest pepper in the world, and a transparent HTTP proxy for API unit-testing and debugging.
+
+A few things remain to be done, but Moruga is far enough along to be useful.
 
 <img src="http://caribbeancelebs.com/wp-content/uploads/2012/02/Trinidad-Moruga-Scorpion.jpg" width="300px"/>
 
 ### Installation ###
 
-Moruga requires Node.js and NPM. If you installed Node from a package, you already have NPM. 
+Moruga requires Node.js and NPM. 
 
 To install Moruga as a binary in your PATH, run this in your console:
 
 ```bash
-git clone https://github.rackspace.com/atl/moruga
-cd moruga
-sudo npm install . -g
+sudo npm install moruga -g
 ```
 
 Run moruga without any parameters to view available options.
