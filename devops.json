@@ -1,0 +1,47 @@
+{
+  "name": "Moruga",
+  "description": "HTTP proxy for API unit-testing and debugging",
+  "devops_version": "0.2",
+  "devopsJSON_URL": "https://github.com/racker/node-moruga/edit/master/devops.json",
+  "tags": [
+    "http",
+    "proxy",
+    "node",
+    "javascript",
+    "ci",
+    "qe",
+    "qa",
+    "unit-testing"
+  ],
+  "contacts": [
+    {
+      "team_name": "Engineering",
+      "members": [
+        {
+          "name": "Kurt Griffiths",
+          "github": "https://github.com/kgriffs",
+          "sso": "",
+          "ircnick": "kgriffs"
+        },
+        {
+          "name": "Jamie Painter",
+          "sso": "",
+          "github": "https://github.com/painterjd"
+        }
+      ]
+    }
+  ],
+  "links": {
+    "README": "https://github.com/racker/node-moruga/blob/master/README.md",
+    "Code": "https://github.com/racker/node-moruga"
+  },
+  "environments": [
+    {
+      "type": "Production",
+      "platforms": [
+        "Ubuntu",
+        "Mac OS X"
+      ]
+    }
+  ]
+}
