@@ -2,4 +2,4 @@
 
 exports = module.exports = require('./lib/moruga.js');
 
-if (!module.parent) exports.listen();
+if (require.main === module) exports.listen();
