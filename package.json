@@ -1,6 +1,6 @@
 {
   "name": "moruga",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Debugging HTTP proxy",
   "preferGlobal": "true",
   "directories": {
