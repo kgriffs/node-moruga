@@ -63,7 +63,7 @@ The built-in X-Moruga-Control handler recognizes the following directives:
 For example, to test response handling in your code for a particular HTTP status code, include this header line in the client's request:
 
 ```
-X-Moruga-Control: short-circuit, status=403
+X-Moruga-Control: short-circuit, status=745
 ```
 
 ### Filter Pipeline ###
